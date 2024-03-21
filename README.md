@@ -11,7 +11,8 @@ c) Create a service account with role "vertex ai service".
 d) Setup a .env file that contains 4 variables. see .sample_env_file
 - PROJECT_ID=<your google project id>
 - LOCATION=<model location like europe-west3>
-- MODEL_ID=<model id like gemini-1.0-pro-vision-001>
+- MODEL_ID=<modelId like gemini-1.0-pro>
+- MODEL_ID_VISION=<modelId gemini-1.0-pro-vision-001>
 - GOOGLE_APPLICATION_CREDENTIALS=<name of your service account file>
 
 A google service account json file must be created in the google developer console with permission role of "vertex ai service".
@@ -29,8 +30,8 @@ POST http://localhost:3000/predict
 Add Header Content-Type=application/json
 Create a json body f.e.
 {
-  "param1": "write one sentence about iphone 15",
-  "param2": "value2",
-  "param3": "value3",
-  "param4": "value4"
+  "scenario": "write one sentence about iphone 15",
+  "camera": "sony a6300",
+  "lens": "",
+  "mail": "john@doe.com"
 }
