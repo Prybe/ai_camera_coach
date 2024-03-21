@@ -1,0 +1,17 @@
+{
+  "name": "ai_camera_coach",
+  "version": "1.0.0",
+  "description": "AI helps you in photography",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/aiplatform": "^3.15.0",
+    "@google-cloud/vertexai": "^0.5.0",
+    "express": "^4.19.1"
+  }
+}
