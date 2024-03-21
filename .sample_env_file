@@ -1,0 +1,4 @@
+PROJECT_ID=<your google project id>
+LOCATION=<model location like europe-west3>
+MODEL_ID=<model id like gemini-1.0-pro-vision-001>
+GOOGLE_APPLICATION_CREDENTIALS=<name of your service account file>
