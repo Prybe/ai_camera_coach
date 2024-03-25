@@ -2,6 +2,8 @@
 const express = require('express');
 const { PredictionServiceClient } = require('@google-cloud/aiplatform');
 const app = express();
+const generatePDF = require('./pdf');
+const sendMail = require('./mail');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -60,11 +62,6 @@ app.post('/predict', async (req, res) => {
     try {
         const { scenario, camera, lens, mail } = req.body;
 
-        process.stdout.write(JSON.stringify(scenario));
-        process.stdout.write(JSON.stringify(camera));
-        process.stdout.write(JSON.stringify(lens));
-        process.stdout.write(JSON.stringify(mail));
-
         if (!scenario || !camera || !mail) {
             return res.status(400).json({
                 success: false,
@@ -103,16 +100,20 @@ app.post('/predict', async (req, res) => {
         const resultAvoid = extractTextFromResponse(returnedAvoid);
         
         // 6) create an image with 1) and 2)
+        // TODO
 
         // 7) create an image with 3) and 4)
+        // TODO
+        
+        // 8) create pdf
+        const pdfBase64 = await generatePDF(resultSettings);
+
+        // 9) send mail
+        await sendMail(mail, pdfBase64);
 
         // Construct and return the JSON response
         res.json({
-            resultSettings,
-            resultComposition,
-            resultCreativeSettings,
-            resultCreativeComposition,
-            resultAvoid
+            resultSettings
         });
     } catch (error) {
         // Log the error for debugging purposes
