@@ -7,7 +7,7 @@ async function generatePDF(content) {
         const templateHtml = await fs.readFile('template.html', 'utf8');
         
         // Step 2: Replace placeholder text with actual content
-        const updatedHtml = templateHtml.replace('PLACEHOLDER_TEXT', content);
+        const updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', content);
         
         // Step 3: Launch a headless browser
         const browser = await puppeteer.launch();

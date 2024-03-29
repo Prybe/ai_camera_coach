@@ -73,24 +73,24 @@ app.post('/predict', async (req, res) => {
         let cameraPrompt = ""
 
         // 1) ask for camera settings as bullet point list 
-        cameraPrompt = "give me 5 important camera setting for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
+        cameraPrompt = "give me 7 important camera setting for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + ". The output format should be a 7 point bullet point list in html style.");
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
 
         // 2) ask for composition tips as bullet point list 
-        cameraPrompt = "give me 5 composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
+        cameraPrompt = "give me 7 composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         // TODO: include resultSettings
         const returnedComposition = await callVertexAIService(cameraPrompt);
         const resultComposition = extractTextFromResponse(returnedComposition);
 
         // 3) ask for more creative settings as bullet point list 
-        cameraPrompt = "give me 5 important extraordanary camera setting for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario);
+        cameraPrompt = "give me 7 important extraordanary camera setting for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         const returnedCreativeSettings = await callVertexAIService(cameraPrompt);
         const resultCreativeSettings = extractTextFromResponse(returnedCreativeSettings);
 
         // 4) ask for more creative composition tips with equipment as bullet point list 
         // TODO: include resultCreativeSettings
-        cameraPrompt = "give me 5 extraordanary composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to have unique photos. Extra equipment is also possible. I want to shoot the scenario " + scenario);
+        cameraPrompt = "give me 7 extraordanary composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to have unique photos. Extra equipment is also possible. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         const returnedCreativeComposition = await callVertexAIService(cameraPrompt);
         const resultCreativeComposition = extractTextFromResponse(returnedCreativeComposition);
 
