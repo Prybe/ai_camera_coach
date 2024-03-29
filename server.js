@@ -73,24 +73,26 @@ app.post('/predict', async (req, res) => {
         let cameraPrompt = ""
 
         // 1) ask for camera settings as bullet point list 
-        cameraPrompt = "give me 7 important camera setting for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + ". The output format should be a 7 point bullet point list in html style.");
+        cameraPrompt = "give me 7 important camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + ". The output format should be a 7 point bullet point list in html style.");
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
 
+        //TODO: check tokens remaining. If there is a problem with it return 400, else return 200 and continue
+        res.status(200).send('Request received, processing in the background.');
+        
         // 2) ask for composition tips as bullet point list 
-        cameraPrompt = "give me 7 composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
-        // TODO: include resultSettings
+        cameraPrompt = "give me 5 compositions with short samples when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         const returnedComposition = await callVertexAIService(cameraPrompt);
         const resultComposition = extractTextFromResponse(returnedComposition);
 
         // 3) ask for more creative settings as bullet point list 
-        cameraPrompt = "give me 7 important extraordanary camera setting for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
+        cameraPrompt = "give me 7 extraordanary and creative camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         const returnedCreativeSettings = await callVertexAIService(cameraPrompt);
         const resultCreativeSettings = extractTextFromResponse(returnedCreativeSettings);
 
         // 4) ask for more creative composition tips with equipment as bullet point list 
         // TODO: include resultCreativeSettings
-        cameraPrompt = "give me 7 extraordanary composition tips with camera " + camera + (lens ? " and lens " + lens : ". I want to have unique photos. Extra equipment is also possible. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
+        cameraPrompt = "give me 7 extraordanary and creative compositions with extra equipment  when i want to photograph with " + camera + (lens ? " and lens " + lens : ". Use different positions as normal. I want to have unique photos. I want to shoot the scenario " + scenario+ ". The output format should be a 7 point bullet point list in html style.");
         const returnedCreativeComposition = await callVertexAIService(cameraPrompt);
         const resultCreativeComposition = extractTextFromResponse(returnedCreativeComposition);
 
@@ -106,15 +108,15 @@ app.post('/predict', async (req, res) => {
         // TODO
         
         // 8) create pdf
-        const pdfBase64 = await generatePDF(resultSettings);
+        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings,resultCreativeComposition, resultAvoid, "", "");
 
         // 9) send mail
         await sendMail(mail, pdfBase64);
 
         // Construct and return the JSON response
-        res.json({
-            resultSettings
-        });
+        //res.json({
+        //   resultSettings
+        //});
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);
@@ -124,24 +126,30 @@ app.post('/predict', async (req, res) => {
     }
 });
 
+async function asyncOperation() {
+    // Simulate an async operation, like fetching data, processing files, etc.
+    return new Promise(resolve => setTimeout(resolve, 2000)); // Example: 2-second delay
+  }
+
+  
 function extractTextFromResponse(response) {
     return response.candidates?.[0]?.content?.parts?.[0]?.text ?? "-";
 }
 
-async function callVertexAIService(topic, camera, lens) {
+async function callVertexAIService(topic) {
     const req = {
         contents: [{ role: 'user', parts: [{ text: topic }] }],
     };
 
     const streamingResp = await generativeModel.generateContentStream(req);
     
-    for await (const item of streamingResp.stream) {
-        process.stdout.write('stream chunk: ' + JSON.stringify(item));
-    }
+    //for await (const item of streamingResp.stream) {
+    //    process.stdout.write('stream chunk: ' + JSON.stringify(item));
+    //}
 
     const result = await streamingResp.response;
 
-    process.stdout.write('aggregated response: ' + JSON.stringify(result));
+    process.stdout.write('aggregated response: ' + result);
 
     return result;
 }

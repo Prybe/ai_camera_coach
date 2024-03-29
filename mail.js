@@ -43,12 +43,10 @@ async function sendEmail(emailadress, pdfContent) {
             encoding: 'base64'
         }]
     };
-    console.log("mail sent.");
 
     // Send the email
     try {
         let info = await transporter.sendMail(mailOptions);
-        console.log('Email sent: ' + info.response);
     } catch (error) {
         console.error('Error sending email:', error);
     }
