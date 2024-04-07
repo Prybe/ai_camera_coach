@@ -83,7 +83,7 @@ app.post('/assistme', async (req, res) => {
         const resultSettings = extractTextFromResponse(returnedSettings);
 
         //TODO: check tokens remaining. If there is a problem with it return 400, else return 200 and continue
-        //res.status(200).send('Request received, processing in the background.');
+        res.status(200).send('Request received, processing in the background.');
 
         // 2) ask for composition tips as bullet point list 
         cameraPrompt = "give me 5 compositions with short samples when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
@@ -116,20 +116,17 @@ app.post('/assistme', async (req, res) => {
         cameraPrompt = "Create a realistic image which was taken with " + camera + ". the scenario is " + scenario + ". Use settings from " + returnedCreativeSettingsWithoutHTML + ". Use a photo composition from " + returnedCreativeCompositionWithoutHTML;
         const imageCreativeUrl = "";//await generateImage(cameraPrompt);
 
-        // 8) create html
-        const htmlContent = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings,resultCreativeComposition, resultAvoid, imageUrl, imageCreativeUrl);
-
         // 8) create pdf
-        //const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings,resultCreativeComposition, resultAvoid, imageUrl, imageCreativeUrl);
+        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings,resultCreativeComposition, resultAvoid, imageUrl, imageCreativeUrl);
 
-        //if (mail) {
+        if (mail) {
         // 9) send mail
-        //    await sendMail(mail, pdfBase64);
-        //}
+            await sendMail(mail, pdfBase64);
+        }
 
         // Set the content type to HTML before sending
-        res.setHeader('Content-Type', 'text/html');
-        res.send(htmlContent);
+        //res.setHeader('Content-Type', 'text/html');
+        //res.send(htmlContent);
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);

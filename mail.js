@@ -1,51 +1,30 @@
 const nodemailer = require('nodemailer');
-const { google } = require('googleapis');
-
-const oAuth2Client = new google.auth.OAuth2(
-    process.env.OAUTH2_GMAIL_CLIENT_ID,
-    process.env.OAUTH2_GMAIL_CLIENT_SECRET,
-    process.env.OAUTH2_GMAIL_REDIRECTURL
-);
-
-// Generate a URL for users to grant your app access
-const scopes = [
-    'https://www.googleapis.com/auth/gmail.send',
-    'https://www.googleapis.com/auth/gmail.readonly' // If you also want read access
-  ];
-
-const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline', // Needed to receive a refresh token
-    scope: scopes,
-});
 
 async function sendEmail(emailadress, pdfContent) {
 
-    const {tokens} = await oAuth2Client.getToken(code);
-    oAuth2Client.setCredentials(tokens);
-
-    const accessToken = (await oAuth2Client.getAccessToken()).token;
-
     // Create a transporter
     let transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: 'smtp-relay.brevo.com',
+        port: 587,
+        secure: false,
         auth: {
-            type: 'OAuth2',
-            user: process.env.OAUTH2_GMAIL_ADRESS,
-            clientId: process.env.OAUTH2_GMAIL_CLIENT_ID,
-            clientSecret: process.env.OAUTH2_GMAIL_CLIENT_SECRET,
-            refreshToken: process.env.OAUTH2_GMAIL_REFRESHTOKEN,
-            accessToken: accessToken,
+            user: process.env.BREVO_MAIL, // Your SendinBlue email address
+            pass: process.env.BREVO_API_KEY // Your SendinBlue SMTP API Key
         },
         tls: {
             rejectUnauthorized: false // Only use this for testing purposes
         },
+        // Adjust the timeout setting
+        connectionTimeout: 60000, // milliseconds
+        greetingTimeout: 60000, // milliseconds
+        socketTimeout: 60000,  // milliseconds
     });
 
     // Email options
     let mailOptions = {
-        from: process.env.OAUTH2_GMAIL_ADRESS,
+        from: process.env.BREVO_MAIL,
         to: emailadress,
-        subject: 'Your Camera Settings',
+        subject: 'AI Camera Assistant Whitepaper',
         text: 'Please find attached the whitepaper with the settings for your equipment and scenario.',
         attachments: [{
             filename: 'camera-assistant.pdf',
@@ -57,6 +36,7 @@ async function sendEmail(emailadress, pdfContent) {
     // Send the email
     try {
         let info = await transporter.sendMail(mailOptions);
+        console.log("Mail sent.");
     } catch (error) {
         console.error('Error sending email:', error);
     }
