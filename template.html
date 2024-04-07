@@ -14,10 +14,44 @@
         href="https://fonts.googleapis.com/css2?display=swap&family=Inter:ital,wght@0,300;0,400;1,300;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400;1,700"
         rel="stylesheet" type="text/css" />
     <style>
+        
+        html, body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            height: auto;
+        }
         body {
-            overflow: auto !important;
+            font-family: Arial, sans-serif;
+            background-color: #007bff; /* Blue background */
+            color: white;
+            display: flex;
+            flex-direction: column;
+        }
+     
+        .paddingTopBottom {
+            padding-bottom: 10px;
+            padding-top: 2px;
         }
 
+        .card {
+            display: flex;
+            justify-content: space-around;
+            padding: 20px;
+            flex: 1;
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .header, .footer {
+            text-align: center;
+            padding: 20px 0;
+            width: 100%;
+        }
+        
         #main {
             opacity: 1.0 !important;
             transform: none !important;
@@ -115,7 +149,7 @@
         audio,
         video {
             margin: 0;
-            padding: 0;
+            padding: 0px;
             border: 0;
             color: white;
             font-size: 100%;
@@ -192,14 +226,6 @@
         *:before,
         *:after {
             box-sizing: border-box;
-        }
-
-        body {
-            line-height: 1.0;
-            min-height: var(--viewport-height);
-            min-width: 320px;
-            overflow-x: hidden;
-            word-wrap: break-word;
         }
 
         body:before {
@@ -480,13 +506,6 @@
         body.is-instant:after {
             display: none !important;
             transition: none !important;
-        }
-
-        .bottom-div {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%; /* Adjust the width as necessary */
         }
 
         h1,
@@ -1902,99 +1921,81 @@
         <div id="main">
             <div class="inner">
                 <section id="home-section">
-                    <div id="container06" class="style2 container default">
+                    <div id="container06" class="style2 container default header">
                         <div class="wrapper">
                             <div class="inner">
                                 <h1 id="text16" class="style1">Whitepaper about your scenario</h1>
                             </div>
                             <div>
-                                <p id="markdown-content" class="style2"><span class="p">PLACEHOLDER_SCENARIO</span></p>
+                                <p id="markdown-content" class="style2 paddingTopBottom"><span class="p">PLACEHOLDER_SCENARIO</span></p>
                             </div>
                         </div>
                     </div>
-                    <div id="container03" class="style1 container columns">
+                    <div id="container03" class="style1 container columns card">
                         <div class="wrapper">
                             <div class="inner">
                                 <div>
-                                    <h3 id="text01" class="style3"><strong>common camera settings</strong></h3>
+                                    <h3 id="text01" class="style3 paddingTopBottom"><strong>common camera settings</strong></h3>
                                     PLACEHOLDER_CAMERA_SETTINGS
                                 </div>
                                 <div>
                                     <hr id="divider02">
                                 </div>
                                 <div>
-                                    <h3 id="text01" class="style3"><strong>common composition tips</strong></h3>
+                                    <h3 id="text01" class="style3 paddingTopBottom"><strong>common composition tips</strong></h3>
                                     PLACEHOLDER_COMPOSITION_TIPS
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="container02" class="style3 container default bottom-div new-page-after">
-                        <div class="wrapper">
-                            <div class="inner">                                
-                                <p id="text02" class="style3">The content presented was generated with the assistance of
-                                    Google Vertex AI. The creator of this website assumes no responsibility for the
-                                    accuracy or reliability of the AI-generated content.</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
                 <section id="creative-section">
-                    <div id="container04" class="style1 container columns">
+                    <div id="container04" class="style1 container columns card new-page-after">
                         <div class="wrapper">
                             <div class="inner">
                                 <div>
-                                    <h3 id="text01" class="style3"><strong>creative camera settings</strong></h3>
+                                    <h3 id="text01" class="style3 paddingTopBottom"><strong>creative camera settings</strong></h3>
                                     PLACEHOLDER_CREATIVE_CAMERA_SETTINGS
                                 </div>
                                 <div>
                                     <hr id="divider03">
                                 </div>
                                 <div>
-                                    <h3 id="text12" class="style3"><strong>create composition tips</strong></h3>
+                                    <h3 id="text12" class="style3 paddingTopBottom"><strong>create composition tips</strong></h3>
                                     PLACEHOLDER_CREATIVE_COMPOSITION_TIPS
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="container02" class="style3 container default bottom-div new-page-after">
-                        <div class="wrapper">
-                            <div class="inner">
-                                <p id="text02" class="style3">The content presented was generated with the assistance of
-                                    Google Vertex AI. The creator of this website assumes no responsibility for the
-                                    accuracy or reliability of the AI-generated content.</p>
-                            </div>
-                        </div>
-                    </div>
                 </section>
                 <section id="samples-section">                    
-                    <div id="container05" class="style1 container default header-space">
+                    <div id="container05" class="style1 container default card">
                         <div class="wrapper">
                             <div class="inner">
-                                <h3 id="text14" class="style3"><strong>avoid these mistakes</strong></h3>
+                                <h3 id="text14" class="style3 paddingTopBottom"><strong>avoid these mistakes</strong></h3>
                                 PLACEHOLDER_AVOID
                             </div>
                         </div>
                     </div>
-                    <div id="container01" class="style1 container columns">
+                    <div id="container01" class="style1 container columns card">
                         <div class="wrapper">
                             <div class="inner">
                                 <div>
-                                    <h3 id="text04" class="style3"><strong>samples with camera settings</strong></h3>
-                                    PLACEHOLDER_SETTINGS_FOR_SAMPLE
+                                    <h3 id="text04" class="style3 column paddingTopBottom"><strong>sample image with camera settings and composition</strong></h3>
+                                    PLACEHOLDER_FOR_SAMPLE_IMAGE
                                 </div>
                                 <div>
                                     <hr id="divider01">
                                 </div>
                                 <div>
-                                    <h3 id="text05" class="style3"><strong>samples with creative camera
+                                    <h3 id="text05" class="style3 column paddingTopBottom"><strong>sample image with creative camera settings and composition
                                             settings</strong></h3>
-                                     PLACEHOLDER_CREATIVE_SETTINGS_FOR_SAMPLE
+                                            PLACEHOLDER_FOR_SAMPLE_CREATIVE_IMAGE
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div id="container02" class="style3 container default bottom-div">
+                    <div id="container02" class="style3 container default footer">
                         <div class="wrapper">
                             <div class="inner">
                                 <p id="text02" class="style3">The content presented was generated with the assistance of

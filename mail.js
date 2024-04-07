@@ -7,11 +7,21 @@ const oAuth2Client = new google.auth.OAuth2(
     process.env.OAUTH2_GMAIL_REDIRECTURL
 );
 
-oAuth2Client.setCredentials({
-    refresh_token: process.env.OAUTH2_GMAIL_REFRESHTOKEN,
+// Generate a URL for users to grant your app access
+const scopes = [
+    'https://www.googleapis.com/auth/gmail.send',
+    'https://www.googleapis.com/auth/gmail.readonly' // If you also want read access
+  ];
+
+const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline', // Needed to receive a refresh token
+    scope: scopes,
 });
 
 async function sendEmail(emailadress, pdfContent) {
+
+    const {tokens} = await oAuth2Client.getToken(code);
+    oAuth2Client.setCredentials(tokens);
 
     const accessToken = (await oAuth2Client.getAccessToken()).token;
 

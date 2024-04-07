@@ -2,28 +2,9 @@ const fs = require('fs/promises');
 const puppeteer = require('puppeteer');
 const marked = require('marked');
 
-async function generatePDF(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, settingForSample, creativeSettingsForSample) {
+async function generatePDF(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative) {
     try {
-        // Step 1: Read the HTML template
-        const templateHtml = await fs.readFile('template.html', 'utf8');
-        
-        const finalCameraSetting = parseAndStyleMarkdown(cameraSetting);
-        const finalCompositionTips = parseAndStyleMarkdown(compositionTips);
-        const finalCreativeSetting = parseAndStyleMarkdown(creativeSetting);     
-        const finalCreativeCompositionTips = parseAndStyleMarkdown(creativeCompositionTips);     
-        const finalAvoid = parseAndStyleMarkdown(avoid);     
-        const finalSettingForSample = parseAndStyleMarkdown(settingForSample);     
-        const finalCreativeSettingsForSample = parseAndStyleMarkdown(creativeSettingsForSample);     
-
-        // Step 2: Replace placeholder text with actual content
-        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', finalCameraSetting);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', finalCompositionTips);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);        
-        updatedHtml = updatedHtml.replace('AVOID', finalAvoid);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', finalCreativeSetting);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', finalCreativeCompositionTips);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_SETTINGS_FOR_SAMPLE', finalSettingForSample);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_SETTINGS_FOR_SAMPLE', finalCreativeSettingsForSample);
+        const updatedHtml = generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative);
 
         // Step 3: Launch a headless browser
         const browser = await puppeteer.launch();
@@ -49,10 +30,65 @@ async function generatePDF(scenario, cameraSetting, compositionTips, creativeSet
     }
 }
 
-function parseAndStyleMarkdown(markdownText) {
+async function generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative) {
+    try {
+        // Step 1: Read the HTML template
+        const templateHtml = await fs.readFile('template.html', 'utf8');
+        
+        const finalCameraSetting = parseAndStyleHtml(cameraSetting);
+        const finalCompositionTips = parseAndStyleHtml(compositionTips);
+        const finalCreativeSetting = parseAndStyleHtml(creativeSetting);     
+        const finalCreativeCompositionTips = parseAndStyleHtml(creativeCompositionTips);     
+        const finalAvoid = parseAndStyleHtml(avoid);  
+
+        //const finalImageUrl = parseAndStyleImage(imageUrl);
+        //const finalCreativeImageUrl = parseAndStyleImage(imageUrlCreative);
+
+        // Step 2: Replace placeholder text with actual content
+        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', finalCameraSetting);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', finalCompositionTips);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);        
+        updatedHtml = updatedHtml.replace('AVOID', finalAvoid);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', finalCreativeSetting);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', finalCreativeCompositionTips);
+        
+        return updatedHtml;
+    } catch (error) {
+        console.error('Error generating HTML:', error);
+        throw error;
+    }
+}
+
+/**
+ * 
+ * @param {string} htmlText The text in html format.
+ * @returns {string} HTML string with inline style.
+ */
+function parseAndStyleHtml(markdownText) {
     const parsedText = marked.parse(markdownText);
     return parsedText.replace("<li", "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
 }
 
+/**
+ * Generates HTML code for displaying an image with specific dimensions.
+ * 
+ * @param {string} imageUrl The URL of the image to be displayed.
+ * @return {string} HTML string for the img element.
+ */
+function parseAndStyleImage(imageUrl) {
+    // Validate the input to ensure it's a properly formatted URL.
+    try {
+      new URL(imageUrl);
+    } catch (error) {
+      throw new Error("Invalid URL provided");
+    }
+  
+    // Create and return the HTML string for the image element
+    // with the specified dimensions (1024x1024).
+    return `<img src="${imageUrl}" width="1024" height="1024" alt="Image"/>`;
+  }
 
-module.exports = generatePDF;
+module.exports = {
+    generatePDF,
+    generateHTML
+  };

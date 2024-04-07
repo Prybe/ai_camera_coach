@@ -8,3 +8,4 @@ OAUTH2_GMAIL_CLIENT_ID=<gmail oauth2 clientId>
 OAUTH2_GMAIL_CLIENT_SECRET=<gmail oauth2 client secret>
 OAUTH2_GMAIL_REFRESHTOKEN=<gmail oauth2 refresh token>
 OAUTH2_GMAIL_REDIRECTURL=https://developers.google.com/oauthplayground
+OPENAI_API_KEY<your open ai api key to create images>
