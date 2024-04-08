@@ -15,6 +15,7 @@ app.use(express.json());
 const cors = require('cors');
 app.use(cors());
 
+
 // Define the endpoint to handle POST requests
 app.post('/assistme', async (req, res) => {
     try {
@@ -81,12 +82,13 @@ app.post('/assistme', async (req, res) => {
             await sendMail(mail, pdfBase64);
         }
 
+        res.status(200);
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);
 
         // Send back an error response
-        res.status(500).json({ success: false, message: "Internal server error." });
+        res.status(500);
     }
 });
 
