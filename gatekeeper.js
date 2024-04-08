@@ -6,7 +6,7 @@ const fileName_Image = process.env.GOOGLE_BUCKET_IMAGE_FILENAME;
 const { createImageWithText } = require('./image');
 
 if (!bucketName || !fileName_Gatekeeper || !fileName_Image) {
-    console.error('Error: The environment variables GOOGLE_BUCKET_NAME, GOOGLE_BUCKET_IMAGE_FILENAME and GOOGLE_BUCKET_FILENAME must be set.');
+    console.error('Error: The environment variables GOOGLE_BUCKET_NAME, GOOGLE_BUCKET_IMAGE_FILENAME and GOOGLE_BUCKET_GATEKEEPER_FILENAME must be set.');
     process.exit(1); // Exit the application if variables are not set
 }
 
