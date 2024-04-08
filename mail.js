@@ -13,21 +13,17 @@ async function sendEmail(emailadress, pdfContent) {
         },
         tls: {
             rejectUnauthorized: false // Only use this for testing purposes
-        },
-        // Adjust the timeout setting
-        connectionTimeout: 60000, // milliseconds
-        greetingTimeout: 60000, // milliseconds
-        socketTimeout: 60000,  // milliseconds
+        }
     });
 
     // Email options
     let mailOptions = {
-        from: process.env.BREVO_MAIL,
+        from: process.env.BREVO_SENDER,
         to: emailadress,
         subject: 'AI Camera Assistant Whitepaper',
         text: 'Please find attached the whitepaper with the settings for your equipment and scenario.',
         attachments: [{
-            filename: 'camera-assistant.pdf',
+            filename: 'ai-camera-assistant.pdf',
             content: pdfContent,
             encoding: 'base64'
         }]
@@ -36,7 +32,6 @@ async function sendEmail(emailadress, pdfContent) {
     // Send the email
     try {
         let info = await transporter.sendMail(mailOptions);
-        console.log("Mail sent.");
     } catch (error) {
         console.error('Error sending email:', error);
     }

@@ -4,7 +4,7 @@ const marked = require('marked');
 
 async function generatePDF(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative) {
     try {
-        const updatedHtml = generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative);
+        const updatedHtml = await generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative);
 
         // Step 3: Launch a headless browser
         const browser = await puppeteer.launch();
@@ -30,7 +30,7 @@ async function generatePDF(scenario, cameraSetting, compositionTips, creativeSet
     }
 }
 
-async function generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative) {
+async function generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid) {
     try {
         // Step 1: Read the HTML template
         const templateHtml = await fs.readFile('template.html', 'utf8');
@@ -40,9 +40,6 @@ async function generateHTML(scenario, cameraSetting, compositionTips, creativeSe
         const finalCreativeSetting = parseAndStyleHtml(creativeSetting);     
         const finalCreativeCompositionTips = parseAndStyleHtml(creativeCompositionTips);     
         const finalAvoid = parseAndStyleHtml(avoid);  
-
-        //const finalImageUrl = parseAndStyleImage(imageUrl);
-        //const finalCreativeImageUrl = parseAndStyleImage(imageUrlCreative);
 
         // Step 2: Replace placeholder text with actual content
         let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', finalCameraSetting);

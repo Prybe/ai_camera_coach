@@ -1,8 +1,14 @@
 # Step 1: Specify the base image. Here, we use the official Node.js image from Docker Hub.
 FROM node:21-alpine
 
-# Step 2: Install Chromium for puppeteer
+# Step 2.1: Install Chromium for puppeteer
 RUN apk add --no-cache chromium
+
+# Step 2.2: Install build tools for canvas package
+RUN apk add python3 make g++
+
+# Step 2.3: Install canvas package dependencies
+RUN apk add --no-cache cairo-dev jpeg-dev pango-dev giflib-dev
 
 # Tell Puppeteer to skip installing Chrome. We'll be using the installed package.
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \

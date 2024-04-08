@@ -5,4 +5,8 @@ MODEL_ID_VISION=<modelId gemini-1.0-pro-vision-001>
 GOOGLE_APPLICATION_CREDENTIALS=<name of your local service account file>
 BREVO_MAIL=<brevo account mail account>
 BREVO_API_KEY=<brevo smtp api key>
-OPENAI_API_KEY<your open ai api key to create images>
+BREVO_SENDER=<email sender>
+OPENAI_API_KEY=<your open ai api key to create images>
+GOOGLE_BUCKET_NAME=<bucket name which contains gatekeeper file>
+GOOGLE_BUCKET_GATEKEEPER_FILENAME=<gatekeeper json filename>
+GOOGLE_BUCKET_IMAGE_FILENAME=<image that is generated and uploaded>
