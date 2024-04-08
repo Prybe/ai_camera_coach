@@ -81,7 +81,6 @@ app.post('/assistme', async (req, res) => {
             await sendMail(mail, pdfBase64);
         }
 
-        res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);
