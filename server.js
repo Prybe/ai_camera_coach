@@ -2,7 +2,7 @@
 
 const express = require('express');
 const app = express();
-const { generatePDF, generateHTML } = require('./pdf');
+const { generatePDF_Py } = require('./pdf');
 const sendMail = require('./mail');
 const { generateImage } = require('./openai');
 const { accessAllowed } = require('./gatekeeper');
@@ -75,8 +75,9 @@ app.post('/assistme', async (req, res) => {
         //TODO: implement image generation with vertex ai, aws or openai
 
         // 8) create pdf
-        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
-
+        //const pdfBase64 = await generatePDF_Py(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+        const pdfBase64 = "";
+        
         if (mail) {
             // 9) send mail
             await sendMail(mail, pdfBase64);

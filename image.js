@@ -1,5 +1,4 @@
-const sharp = require('sharp');
-const { createCanvas, loadImage } = require('canvas');
+const { createCanvas } = require('canvas');
 
 async function createImageWithText(text) {
     try {
