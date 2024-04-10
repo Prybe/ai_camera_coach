@@ -15,6 +15,26 @@ app.use(express.json());
 const cors = require('cors');
 app.use(cors());
 
+// ping with gatekeeper
+app.get('/assistme', async (req, res) => {
+    try {
+        if (await !accessAllowed()) {
+            return res.status(403).json({
+                success: false,
+                message: "Maximum number of daily calls reached. Try it tomorrow."
+            });
+        }
+
+        res.status(200).json({ success: true, message: "Pong" });
+    } catch (error) {
+        // Log the error for debugging purposes
+        console.error("Error during prediction:", error);
+
+        // Send back an error response
+        res.status(500).json({ success: false, message: "Internal server error." });
+    }
+});
+
 // Define the endpoint to handle POST requests
 app.post('/assistme', async (req, res) => {
     try {
@@ -27,7 +47,7 @@ app.post('/assistme', async (req, res) => {
             });
         }
 
-        if (!accessAllowed()) {
+        if (await !accessAllowed()) {
             return res.status(403).json({
                 success: false,
                 message: "Maximum number of daily calls reached. Try it tomorrow."
