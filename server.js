@@ -16,7 +16,7 @@ const cors = require('cors');
 app.use(cors());
 
 // ping with gatekeeper
-app.get('/assistme', async (req, res) => {
+app.get('/ping', async (req, res) => {
     try {
         if (await !accessAllowed()) {
             return res.status(403).json({
