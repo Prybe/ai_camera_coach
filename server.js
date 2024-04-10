@@ -2,7 +2,7 @@
 
 const express = require('express');
 const app = express();
-const { generatePDF_Py } = require('./pdf');
+const { generatePDF, generateHTML } = require('./pdf');
 const sendMail = require('./mail');
 const { generateImage } = require('./openai');
 const { accessAllowed } = require('./gatekeeper');
@@ -14,7 +14,6 @@ app.use(express.json());
 // Enabling CORS for all requests
 const cors = require('cors');
 app.use(cors());
-
 
 // Define the endpoint to handle POST requests
 app.post('/assistme', async (req, res) => {
@@ -28,7 +27,7 @@ app.post('/assistme', async (req, res) => {
             });
         }
 
-        if (!await accessAllowed()) {
+        if (!accessAllowed()) {
             return res.status(403).json({
                 success: false,
                 message: "Maximum number of daily calls reached. Try it tomorrow."
@@ -43,10 +42,6 @@ app.post('/assistme', async (req, res) => {
         cameraPrompt = "give me 7 important camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
-
-        // wait the first call, if ok return with 200. No need to wait for the rest
-        // TODO verify first call result to check available token for further vertex ai calls
-        res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
 
         // // 2) ask for composition tips as bullet point list 
         cameraPrompt = "give me 5 compositions with short samples when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
@@ -75,21 +70,20 @@ app.post('/assistme', async (req, res) => {
         //TODO: implement image generation with vertex ai, aws or openai
 
         // 8) create pdf
-        //const pdfBase64 = await generatePDF_Py(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
-        const pdfBase64 = "";
-        
+        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+
         if (mail) {
             // 9) send mail
             await sendMail(mail, pdfBase64);
         }
 
-        res.status(200);
+        res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);
 
         // Send back an error response
-        res.status(500);
+        res.status(500).json({ success: false, message: "Internal server error." });
     }
 });
 

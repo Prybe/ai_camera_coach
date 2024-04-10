@@ -22,11 +22,11 @@ async function sendEmail(emailadress, pdfContent) {
         to: emailadress,
         subject: 'AI Camera Assistant Whitepaper',
         text: 'Please find attached the whitepaper with the settings for your equipment and scenario.',
-        // attachments: [{
-        //     filename: 'ai-camera-assistant.pdf',
-        //     content: pdfContent,
-        //     encoding: 'base64'
-        // }]
+        attachments: [{
+            filename: 'ai-camera-assistant.pdf',
+            content: pdfContent,
+            encoding: 'base64'
+        }]
     };
 
     // Send the email
