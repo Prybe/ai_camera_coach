@@ -2,7 +2,7 @@
 
 const express = require('express');
 const app = express();
-const { generatePDF, generateHTML } = require('./pdf');
+const { generatePDF, generateHTML, generateJSON } = require('./pdf');
 const sendMail = require('./mail');
 const { generateImage } = require('./openai');
 const { accessAllowed } = require('./gatekeeper');
@@ -63,6 +63,11 @@ app.post('/assistme', async (req, res) => {
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
 
+        if (mail) {
+            // no need to wait
+            res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
+        }
+
         // // 2) ask for composition tips as bullet point list 
         cameraPrompt = "give me 5 compositions with short samples when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedComposition = await callVertexAIService(cameraPrompt);
@@ -89,15 +94,24 @@ app.post('/assistme', async (req, res) => {
         // // 7) create an image with 3) and 4)
         //TODO: implement image generation with vertex ai, aws or openai
 
-        // 8) create pdf
-        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
 
         if (mail) {
+
+            // 8) create pdf
+            const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+
             // 9) send mail
             await sendMail(mail, pdfBase64);
-        }
 
-        res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
+            res.status(200).json({ success: true });
+        }
+        else {
+            // 8) create pdf
+            const json = await generateJSON(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+
+
+            res.status(200).json({ success: true, data: json });
+        }
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);

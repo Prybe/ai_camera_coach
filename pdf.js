@@ -74,6 +74,26 @@ async function generateHTML(scenario, cameraSetting, compositionTips, creativeSe
     }
 }
 
+async function generateJSON(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid) {
+    try {
+        // Construct the JSON object from the provided parameters
+        const json = {
+            scenario: scenario,
+            cameraSetting: cameraSetting,
+            compositionTips: compositionTips,
+            creativeSetting: creativeSetting,
+            creativeCompositionTips: creativeCompositionTips,
+            avoid: avoid
+        };
+
+        // Return the constructed JSON object
+        return json;
+    } catch (error) {
+        console.error('Error generating JSON:', error);
+        throw error;
+    }
+}
+
 /**
  * 
  * @param {string} htmlText The text in html format.
@@ -105,5 +125,6 @@ function parseAndStyleImage(imageUrl) {
 
 module.exports = {
     generatePDF,
-    generateHTML
+    generateHTML,
+    generateJSON
 };
