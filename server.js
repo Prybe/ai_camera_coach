@@ -71,22 +71,22 @@ app.post('/assistme', async (req, res) => {
         }
 
         // // 2) ask for composition tips as bullet point list 
-        cameraPrompt = "give me 5 compositions with short samples when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
+        cameraPrompt = "give me 7 compositions with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedComposition = await callVertexAIService(cameraPrompt);
         const resultComposition = extractTextFromResponse(returnedComposition);
 
         // // 3) ask for more creative settings as bullet point list 
-        cameraPrompt = "give me 7 extraordanary and creative camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
+        cameraPrompt = "give me 7 extraordinary and creative camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedCreativeSettings = await callVertexAIService(cameraPrompt);
         const resultCreativeSettings = extractTextFromResponse(returnedCreativeSettings);
 
         // // 4) ask for more creative composition tips with equipment as bullet point list 
-        cameraPrompt = "give me 7 extraordanary and creative compositions with extra equipment  when i want to photograph with " + camera + (lens ? " and lens " + lens : ". Use different positions as normal. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
+        cameraPrompt = "give me 7 extraordinary compositions with extra equipment and creative camera settings with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". Use different positions as normal. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedCreativeComposition = await callVertexAIService(cameraPrompt);
         const resultCreativeComposition = extractTextFromResponse(returnedCreativeComposition);
 
         // // 5) ask for things to avoid
-        cameraPrompt = "give me 5 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
+        cameraPrompt = "give me 7 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
         const returnedAvoid = await callVertexAIService(cameraPrompt);
         const resultAvoid = extractTextFromResponse(returnedAvoid);
 
