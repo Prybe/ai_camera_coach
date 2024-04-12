@@ -63,7 +63,7 @@ async function generateHTML(scenario, cameraSetting, compositionTips, creativeSe
         let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', finalCameraSetting);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', finalCompositionTips);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);
-        updatedHtml = updatedHtml.replace('AVOID', finalAvoid);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_AVOID', finalAvoid);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', finalCreativeSetting);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', finalCreativeCompositionTips);
 
@@ -100,8 +100,9 @@ async function generateJSON(scenario, cameraSetting, compositionTips, creativeSe
  * @returns {string} HTML string with inline style.
  */
 function parseAndStyleHtml(markdownText) {
+
     const parsedText = marked.parse(markdownText);
-    return parsedText.replace("<li", "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
+    return parsedText.replace(/<li/g, "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
 }
 
 /**

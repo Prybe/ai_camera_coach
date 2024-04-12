@@ -56,15 +56,14 @@ app.post('/assistme', async (req, res) => {
 
         // interact with Vertex AI
         let cameraPrompt = ""
-        const outputFormatPrompt = "The output format should be a 7 point bullet point list in html style."
+        //TODO: Currently ignored by the vertex ai api
+        //const outputFormatPrompt = "The output format should be a point bullet point list in html."
+        const outputFormatPrompt = "";
 
         // 1) ask for camera settings as bullet point list 
         cameraPrompt = "give me 7 important camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
-
-        // TODO: check response (tokens etc)        
-        console.log(returnedSettings);
 
         if (mail) {
             // TODO: no need to wait
@@ -101,10 +100,13 @@ app.post('/assistme', async (req, res) => {
 
             // 8) create pdf
             const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+            
+            //DEBUG 
+            //const content = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
 
             // 9) send mail
             await sendMail(mail, pdfBase64);
-
+            
             res.status(200).json({ success: true });
         }
         else {
