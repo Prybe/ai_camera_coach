@@ -1,7 +1,7 @@
 PROJECT_ID=<your google project id>
 LOCATION=<model location like europe-west3>
-MODEL_ID=<modelId like gemini-1.0-pro>
-MODEL_ID_VISION=<modelId gemini-1.0-pro-vision-001>
+MODEL_ID=<modelId like gemini-1.0-pro-vision-001>
+MODEL_ID_VISION=<checked but not used - modelId like gemini-1.0-pro-vision-001>
 GOOGLE_APPLICATION_CREDENTIALS=<name of your local service account file>
 BREVO_MAIL=<brevo account mail account>
 BREVO_API_KEY=<brevo smtp api key>

@@ -63,9 +63,11 @@ app.post('/assistme', async (req, res) => {
         const returnedSettings = await callVertexAIService(cameraPrompt);
         const resultSettings = extractTextFromResponse(returnedSettings);
 
+        // TODO: check response (tokens etc)        
+        console.log(returnedSettings);
+
         if (mail) {
-            // no need to wait
-            res.status(200).json({ success: true, message: "Processing is ongoing. The email will be sent shortly. Check your inbox and spam folder." });
+            // TODO: no need to wait
         }
 
         // // 2) ask for composition tips as bullet point list 
@@ -106,10 +108,10 @@ app.post('/assistme', async (req, res) => {
             res.status(200).json({ success: true });
         }
         else {
-            // 8) create pdf
+            // 8) create json
             const json = await generateJSON(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
 
-
+             // 9) send json
             res.status(200).json({ success: true, data: json });
         }
     } catch (error) {
