@@ -1,8 +1,18 @@
 version: '3.8'
 services:
   ai-camera-coach-backend-service:
-    image: ai-camera-coach:latest
+    build:
+      context: ./api/backendforfrontend
+      dockerfile: dockerfile
     ports:
       - "3000:3000"
+    env_file:
+      - .env
+  ai-camera-coach-processor-service:
+    build:
+      context: ./api/processor
+      dockerfile: dockerfile
+    ports:
+      - "3010:3000"
     env_file:
       - .env

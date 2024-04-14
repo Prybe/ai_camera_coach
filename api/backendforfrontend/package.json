@@ -1,0 +1,19 @@
+{
+  "name": "ai_camera_coach",
+  "version": "1.0.0",
+  "description": "AI helps you in photography",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google-cloud/storage": "^7.9.0",
+    "cors": "^2.8.5",
+    "canvas": "^2.11.2",
+    "express": "^4.19.1",
+    "uuid": "~9.0.1"
+  }
+}
