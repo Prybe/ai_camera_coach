@@ -19,8 +19,7 @@ async function getData() {
         const options = {
             prefix: 'jobs/',
             autoPaginate: false, 
-            delimiter: '/',
-            maxResults: 1,
+            delimiter: '/'
         };
 
         const [files] = await bucket.getFiles(options);
