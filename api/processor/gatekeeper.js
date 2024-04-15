@@ -32,8 +32,12 @@ async function getData() {
         const fileName = file.name;
         const contents = await file.download();
 
+        // Log the raw contents for debugging
+        const contentsString = contents.toString('utf8');
+        console.warn("Raw contents:", contentsString);
+
         // Return the file name and its contents as a JSON object
-        const data = JSON.parse(contents.toString());
+        const data = JSON.parse(contentsString);
         return { fileName, data };
     } catch (error) {
         console.error('Error retrieving file:', error);
