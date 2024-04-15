@@ -16,7 +16,7 @@ const cors = require('cors');
 app.use(cors());
 
 // Define the endpoint to handle POST requests
-app.get('/process', async (req, res) => {
+app.get('/api/process', async (req, res) => {
 
     let fileName = "";
 

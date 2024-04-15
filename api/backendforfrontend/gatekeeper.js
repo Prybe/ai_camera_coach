@@ -41,6 +41,7 @@ async function saveData(scenario, camera, lens, mail) {
         console.log(`Data saved to ${fileName} in bucket ${bucketName}`);
     } catch (error) {
         console.error('Error saving file:', error);
+        throw error;
     }
 }
 

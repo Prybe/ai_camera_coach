@@ -3,7 +3,6 @@ const storage = new Storage();
 const bucketName = process.env.GOOGLE_BUCKET_NAME;
 const fileName_Gatekeeper = process.env.GOOGLE_BUCKET_GATEKEEPER_FILENAME;
 const fileName_Image = process.env.GOOGLE_BUCKET_IMAGE_FILENAME;
-const { createImageWithText } = require('./image');
 const { v4: uuidv4 } = require('uuid');  // Importing the UUID v4 function
 
 if (!bucketName || !fileName_Gatekeeper || !fileName_Image) {
@@ -33,7 +32,7 @@ async function getData() {
         return { fileName, data };
     } catch (error) {
         console.error('Error retrieving file:', error);
-        return null; // Or handle error differently
+        throw error;
     }
 }
 // Function to save data to a Google Cloud Storage bucket
@@ -66,6 +65,7 @@ async function saveData(scenario, camera, lens, mail) {
         console.log(`Data saved to ${fileName} in bucket ${bucketName}`);
     } catch (error) {
         console.error('Error saving file:', error);
+        throw error;
     }
 }
 
@@ -79,6 +79,7 @@ async function deleteData(fileName) {
         console.log(`File ${fileName} deleted successfully from bucket ${bucketName}.`);
     } catch (error) {
         console.error('Error deleting file:', error);
+        throw error;
     }
 }
 

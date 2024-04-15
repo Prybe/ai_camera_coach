@@ -1,6 +1,12 @@
 # Step 1: Specify the base image. Here, we use the official Node.js image from Docker Hub.
 FROM --platform=linux/amd64 node:21-alpine
 
+# Step 1.1: Install build tools for canvas package
+RUN apk add python3 make g++
+
+# Step 1.2: Install package dependencies
+RUN apk add --no-cache cairo-dev jpeg-dev pango-dev giflib-dev curl fontconfig freetype ttf-freefont
+
 # Step 2: Setup User
 RUN addgroup -S appuser && adduser -S -g appuser appuser \
     && mkdir -p /home/appuser/Downloads /app \

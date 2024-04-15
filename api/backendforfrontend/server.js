@@ -12,7 +12,7 @@ const cors = require('cors');
 app.use(cors());
 
 // Define the endpoint to handle POST requests
-app.post('/assistme', async (req, res) => {
+app.post('/api/assistme', async (req, res) => {
     try {
         const { scenario, camera, lens, mail } = req.body;
 
