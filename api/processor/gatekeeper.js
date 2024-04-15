@@ -19,7 +19,8 @@ async function getData() {
         const options = {
             prefix: 'jobs/',
             autoPaginate: false, 
-            delimiter: '/'
+            delimiter: '/',
+            maxResults: 5,
         };
 
         const [files] = await bucket.getFiles(options);
@@ -28,21 +29,31 @@ async function getData() {
             return null;
         }
 
-        // Get the first file from the list
-        const file = files[0];
-        const fileName = file.name;
-        const contents = await file.download();
-        console.warn("filename:", fileName);
-        console.warn("length:", files.length);
+        files.forEach(async file => {
+            // You can work with each file here
+            console.warn(file.name); // For example, logging the name of each file
 
-        // Log the raw contents for debugging
-        const contentsString = contents.toString('utf8');
-        console.warn("Raw contents:", contentsString);
-      
+            if (file.name.startsWith('jobs') && file.name.endsWith('.json')) {
+                console.log('Found a file:', file.name); // Log or handle the file as needed
 
-        // Return the file name and its contents as a JSON object
-        const data = JSON.parse(contentsString);
-        return { fileName, data };
+                // Get the first file from the list
+                const fileName = file.name;
+                const contents = await file.download();
+                console.warn("filename:", fileName);
+                console.warn("length:", files.length);
+
+                // Log the raw contents for debugging
+                const contentsString = contents.toString('utf8');
+                console.warn("Raw contents:", contentsString);
+            
+                // Return the file name and its contents as a JSON object
+                const data = JSON.parse(contentsString);
+                return { fileName, data };
+              }
+          });
+
+          return null;
+
     } catch (error) {
         console.error('Error retrieving file:', error);
         throw error;

@@ -24,6 +24,9 @@ app.get('/api/process', async (req, res) => {
 
         const result = await getData();
 
+        if(result == null)
+            return;
+
         const camera = result.data.camera;
         const scenario = result.data.scenario;
         const lens = result.ldata.ens;
