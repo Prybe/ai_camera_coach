@@ -52,14 +52,7 @@ async function callVertexAIService(topic) {
     };
 
     const streamingResp = await generativeModel.generateContentStream(req);
-
-    //for await (const item of streamingResp.stream) {
-    //    process.stdout.write('stream chunk: ' + JSON.stringify(item));
-    //}
-
     const result = await streamingResp.response;
-
-    process.stdout.write('aggregated response: ' + result);
 
     return result;
 }

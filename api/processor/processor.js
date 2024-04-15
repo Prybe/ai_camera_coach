@@ -29,7 +29,7 @@ app.get('/api/process', async (req, res) => {
 
         const camera = result.data.camera;
         const scenario = result.data.scenario;
-        const lens = result.ldata.ens;
+        const lens = result.data.lens;
         const mail = result.data.mail;
         fileName = result.fileName;
 
