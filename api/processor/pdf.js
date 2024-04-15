@@ -1,11 +1,12 @@
 const fs = require('fs/promises');
 const marked = require('marked');
 var puppeteer = require("puppeteer");
+const { JSDOM } = require('jsdom');
 
 // Function to convert HTML to PDF Buffer using WeasyPrint
-async function generatePDF(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative) {
+async function generatePDF(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
 
-    const updatedHtml = await generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid, imageUrl, imageUrlCreative);
+    const updatedHtml = await generateHTML(scenario, cameraSettingComposition, creativeSettingsComposition, avoid);
 
     let browser = null;
     try {
@@ -48,24 +49,22 @@ async function generatePDF(scenario, cameraSetting, compositionTips, creativeSet
     }
 }
 
-async function generateHTML(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid) {
+async function generateHTML(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
     try {
         // Step 1: Read the HTML template
         const templateHtml = await fs.readFile('template.html', 'utf8');
 
-        const finalCameraSetting = parseAndStyleHtml(cameraSetting);
-        const finalCompositionTips = parseAndStyleHtml(compositionTips);
-        const finalCreativeSetting = parseAndStyleHtml(creativeSetting);
-        const finalCreativeCompositionTips = parseAndStyleHtml(creativeCompositionTips);
+        const result = parseAndStyleHtml2(cameraSettingComposition);
+        const resultCreative = parseAndStyleHtml2(creativeSettingsComposition);
         const finalAvoid = parseAndStyleHtml(avoid);
 
         // Step 2: Replace placeholder text with actual content
-        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', finalCameraSetting);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', finalCompositionTips);
+        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', result[0].text);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', result[1].text);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_AVOID', finalAvoid);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', finalCreativeSetting);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', finalCreativeCompositionTips);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', resultCreative[0].text);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', resultCreative[1].text);
 
         return updatedHtml;
     } catch (error) {
@@ -74,15 +73,13 @@ async function generateHTML(scenario, cameraSetting, compositionTips, creativeSe
     }
 }
 
-async function generateJSON(scenario, cameraSetting, compositionTips, creativeSetting, creativeCompositionTips, avoid) {
+async function generateJSON(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
     try {
         // Construct the JSON object from the provided parameters
         const json = {
             scenario: scenario,
-            cameraSetting: cameraSetting,
-            compositionTips: compositionTips,
-            creativeSetting: creativeSetting,
-            creativeCompositionTips: creativeCompositionTips,
+            cameraSettingAndComposition: cameraSettingComposition,
+            creativeCameraSettingAndComposition: creativeSettingsComposition,
             avoid: avoid
         };
 
@@ -103,6 +100,30 @@ function parseAndStyleHtml(markdownText) {
 
     const parsedText = marked.parse(markdownText);
     return parsedText.replace(/<li/g, "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
+}
+
+function parseAndStyleHtml2(markdownText) {
+    // Parse markdown to HTML
+    const parsedHtml = marked.parse(markdownText);
+
+    // Create a new JSDOM instance with the parsed HTML
+    const dom = new JSDOM(parsedHtml);
+    const document = dom.window.document;
+
+    // Find all <li> elements
+    const listItems = document.querySelectorAll('li');
+    
+    // Create an array to hold objects representing each <li>
+    const listItemTexts = [];
+
+    // Iterate over each <li> element
+    listItems.forEach((li, index) => {
+        // Push the text content of each <li> into the array as an object
+        listItemTexts.push({ id: index, text: li.textContent });
+    });
+
+    // Return the array of objects
+    return listItemTexts;
 }
 
 /**

@@ -34,34 +34,32 @@ app.get('/api/process', async (req, res) => {
         fileName = result.fileName;
 
         // interact with Vertex AI
-        let cameraPrompt = ""
+        let cameraPrompt1 = ""
+        let cameraPrompt2 = ""
+
         //TODO: Currently ignored by the vertex ai api
         //const outputFormatPrompt = "The output format should be a point bullet point list in html."
         const outputFormatPrompt = "";
 
         // 1) ask for camera settings as bullet point list 
-        cameraPrompt = "give me 7 important camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
-        const returnedSettings = await callVertexAIService(cameraPrompt);
-        const resultSettings = extractTextFromResponse(returnedSettings);
+        cameraPrompt1 = "give me 7 important camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
 
         // // 2) ask for composition tips as bullet point list 
-        cameraPrompt = "give me 7 compositions with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
-        const returnedComposition = await callVertexAIService(cameraPrompt);
-        const resultComposition = extractTextFromResponse(returnedComposition);
+        cameraPrompt2 = "give me 7 compositions with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
+        const returned = await callVertexAIService(cameraPrompt1 + cameraPrompt2);
+        const resultSettingsAndComposition = extractTextFromResponse(returned);
 
         // // 3) ask for more creative settings as bullet point list 
-        cameraPrompt = "give me 7 extraordinary and creative camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
-        const returnedCreativeSettings = await callVertexAIService(cameraPrompt);
-        const resultCreativeSettings = extractTextFromResponse(returnedCreativeSettings);
+        cameraPrompt1 = "give me 7 extraordinary and creative camera setting with explanation for camera " + camera + (lens ? " and lens " + lens : " which are unusual but creative. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
 
         // // 4) ask for more creative composition tips with equipment as bullet point list 
-        cameraPrompt = "give me 7 extraordinary compositions with extra equipment and creative camera settings with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". Use different positions as normal. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
-        const returnedCreativeComposition = await callVertexAIService(cameraPrompt);
-        const resultCreativeComposition = extractTextFromResponse(returnedCreativeComposition);
+        cameraPrompt2 = "give me 7 extraordinary compositions with extra equipment and creative camera settings with explanation when i want to photograph with " + camera + (lens ? " and lens " + lens : ". Use different positions as normal. I want to have unique photos. I want to shoot the scenario " + scenario + "." + outputFormatPrompt);
+        const returnedCreative = await callVertexAIService(cameraPrompt1 + cameraPrompt2);
+        const resultCreativeSettingsAndComposition = extractTextFromResponse(returnedCreative);
 
         // // 5) ask for things to avoid
-        cameraPrompt = "give me 7 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
-        const returnedAvoid = await callVertexAIService(cameraPrompt);
+        cameraPrompt1 = "give me 7 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to shoot the scenario " + scenario);
+        const returnedAvoid = await callVertexAIService(cameraPrompt1);
         const resultAvoid = extractTextFromResponse(returnedAvoid);
 
         // // 6) create an image with 1) and 2)
@@ -73,7 +71,7 @@ app.get('/api/process', async (req, res) => {
         if (mail) {
 
             // 8) create pdf
-            const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+            const pdfBase64 = await generatePDF(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
 
             //DEBUG 
             //const content = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
@@ -87,7 +85,7 @@ app.get('/api/process', async (req, res) => {
         }
         else {
             // create json
-            const json = await generateJSON(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+            const json = await generateJSON(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
 
             // delete 
             await deleteFile(fileName);
