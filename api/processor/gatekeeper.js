@@ -16,6 +16,11 @@ async function getData() {
 
     try {
         // Get a list of files in the "jobs" folder
+        const options = {
+            prefix: 'jobs/',
+            maxResults: 1,
+        };
+
         const [files] = await bucket.getFiles(options);
         if (files.length === 0) {
             console.log('No files found in the "jobs" folder.');
