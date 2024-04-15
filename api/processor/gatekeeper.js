@@ -31,10 +31,12 @@ async function getData() {
         const file = files[0];
         const fileName = file.name;
         const contents = await file.download();
-
+        console.warn("filename:", fileName);
+        
         // Log the raw contents for debugging
         const contentsString = contents.toString('utf8');
         console.warn("Raw contents:", contentsString);
+      
 
         // Return the file name and its contents as a JSON object
         const data = JSON.parse(contentsString);
