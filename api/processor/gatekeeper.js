@@ -18,6 +18,8 @@ async function getData() {
         // Get a list of files in the "jobs" folder
         const options = {
             prefix: 'jobs/',
+            autoPaginate: false, 
+            delimiter: '/',
             maxResults: 1,
         };
 
@@ -32,7 +34,8 @@ async function getData() {
         const fileName = file.name;
         const contents = await file.download();
         console.warn("filename:", fileName);
-        
+        console.warn("length:", files.length);
+
         // Log the raw contents for debugging
         const contentsString = contents.toString('utf8');
         console.warn("Raw contents:", contentsString);
