@@ -1,7 +1,6 @@
 const fs = require('fs/promises');
 const marked = require('marked');
 var puppeteer = require("puppeteer");
-const { JSDOM } = require('jsdom');
 
 // Function to convert HTML to PDF Buffer using WeasyPrint
 async function generatePDF(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
@@ -53,19 +52,20 @@ async function generateHTML(scenario, cameraSettingComposition, creativeSettings
     try {
         // Step 1: Read the HTML template
         const templateHtml = await fs.readFile('template.html', 'utf8');
-
+        console.log(cameraSettingComposition);
         const result = parseAndStyleHtml2(cameraSettingComposition);
+        console.log(result[0].text);
         const resultCreative = parseAndStyleHtml2(creativeSettingsComposition);
         const finalAvoid = parseAndStyleHtml(avoid);
 
         // Step 2: Replace placeholder text with actual content
-        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', result[0].text);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', result[1].text);
+        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', setStyle(result[0].text));
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', setStyle(result[1].text));
         updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_AVOID', finalAvoid);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', resultCreative[0].text);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', resultCreative[1].text);
-
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', setStyle(resultCreative[0].text));
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', setStyle(resultCreative[1].text));
+        
         return updatedHtml;
     } catch (error) {
         console.error('Error generating HTML:', error);
@@ -99,32 +99,45 @@ async function generateJSON(scenario, cameraSettingComposition, creativeSettings
 function parseAndStyleHtml(markdownText) {
 
     const parsedText = marked.parse(markdownText);
-    return parsedText.replace(/<li/g, "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
+    return setStyle(parsedText);
+}
+
+function setStyle(text) {
+    return text.replace(/<li/g, "<li style=\"margin-bottom: 10px; letter-spacing: 0.1px;\"");
 }
 
 function parseAndStyleHtml2(markdownText) {
-    // Parse markdown to HTML
-    const parsedHtml = marked.parse(markdownText);
+    try {
+        // Parse markdown to HTML
+        const parsedHtml = marked.parse(markdownText);
 
-    // Create a new JSDOM instance with the parsed HTML
-    const dom = new JSDOM(parsedHtml);
-    const document = dom.window.document;
+        // 
+        const regex = /<ol[^>]*>([\s\S]*?)<\/ol>/gi;
 
-    // Find all <li> elements
-    const listItems = document.querySelectorAll('li');
-    
-    // Create an array to hold objects representing each <li>
-    const listItemTexts = [];
+        // Create an array to hold objects representing each <li>
+        const listItemTexts = [];
 
-    // Iterate over each <li> element
-    listItems.forEach((li, index) => {
-        // Push the text content of each <li> into the array as an object
-        listItemTexts.push({ id: index, text: li.textContent });
-    });
+        // Use matchAll to find all matches and iterate with a for...of loop
+        const matches = html.matchAll(regex);
 
-    // Return the array of objects
-    return listItemTexts;
+        let index = 0;
+        for (const match of matches) {
+            console.log(`Match found: ${match[0]}`);
+            // Extract the text content within <li></li>
+            listItemTexts.push({
+                id: index,
+                text: match[0].trim()
+            });
+            index++;
+        }
+        // Return the array of objects
+        return listItemTexts;
+    } catch (error) {
+        console.error("Error in parseAndStyleHtml2:", error);
+        throw error;  // Re-throw after logging or handle differently if needed
+    }
 }
+
 
 /**
  * Generates HTML code for displaying an image with specific dimensions.

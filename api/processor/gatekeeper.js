@@ -29,9 +29,9 @@ async function getData() {
             return null;
         }
 
-        files.forEach(async file => {
+        // Process each file
+        for (const file of files) {
             if (file.name.startsWith('jobs') && file.name.endsWith('.json')) {
-
                 // Get the first file from the list
                 const fileName = file.name;
                 const contents = await file.download();
@@ -40,16 +40,16 @@ async function getData() {
                 // Return the file name and its contents as a JSON object
                 const data = JSON.parse(contentsString);
                 return { fileName, data };
-              }
-          });
+            }
+        }
 
-          return null;
-
+        return null;
     } catch (error) {
         console.error('Error retrieving file:', error);
         throw error;
     }
 }
+
 // Function to save data to a Google Cloud Storage bucket
 async function saveData(scenario, camera, lens, mail) {
     // The name of the bucket and the file
