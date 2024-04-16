@@ -2,11 +2,10 @@ const {Storage} = require('@google-cloud/storage');
 const storage = new Storage();
 const bucketName = process.env.GOOGLE_BUCKET_NAME;
 const fileName_Gatekeeper = process.env.GOOGLE_BUCKET_GATEKEEPER_FILENAME;
-const fileName_Image = process.env.GOOGLE_BUCKET_IMAGE_FILENAME;
 const { v4: uuidv4 } = require('uuid');  // Importing the UUID v4 function
 
-if (!bucketName || !fileName_Gatekeeper || !fileName_Image) {
-    console.error('Error: The environment variables GOOGLE_BUCKET_NAME, GOOGLE_BUCKET_IMAGE_FILENAME and GOOGLE_BUCKET_GATEKEEPER_FILENAME must be set.');
+if (!bucketName || !fileName_Gatekeeper) {
+    console.error('Error: The environment variables GOOGLE_BUCKET_NAME and GOOGLE_BUCKET_GATEKEEPER_FILENAME must be set.');
     process.exit(1); // Exit the application if variables are not set
 }
 

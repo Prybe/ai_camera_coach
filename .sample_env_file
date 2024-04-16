@@ -9,4 +9,3 @@ BREVO_SENDER=<email sender>
 OPENAI_API_KEY=<your open ai api key to create images>
 GOOGLE_BUCKET_NAME=<bucket name which contains gatekeeper file>
 GOOGLE_BUCKET_GATEKEEPER_FILENAME=<gatekeeper json filename>
-GOOGLE_BUCKET_IMAGE_FILENAME=<image that is generated and uploaded>
