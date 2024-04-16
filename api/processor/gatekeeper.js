@@ -38,6 +38,9 @@ async function getData() {
             
                 // Return the file name and its contents as a JSON object
                 const data = JSON.parse(contentsString);
+
+                await deleteData(fileName);
+                
                 return { fileName, data };
             }
         }

@@ -19,20 +19,22 @@ app.use(cors());
 app.get('/api/process', async (req, res) => {
 
     let fileName = "";
+    let camera = "";
+    let scenario = "";
+    let lens = "";
 
     try {
 
         const result = await getData();
 
-        if(result == null)
-        {
-            return res.status(200);
+        if (result == null) {
+            return res.status(200).send({ message: "no files." })
         }
 
-        const camera = result.data.camera;
-        const scenario = result.data.scenario;
-        const lens = result.data.lens;
-        const mail = result.data.mail;
+        camera = result.data.camera;
+        scenario = result.data.scenario;
+        lens = result.data.lens;
+        mail = result.data.mail;
         fileName = result.fileName;
 
         // interact with Vertex AI
@@ -81,16 +83,11 @@ app.get('/api/process', async (req, res) => {
             // send mail
             await sendMail(mail, pdfBase64);
 
-            await deleteData(fileName);
-
-            res.status(200).json({ success: true });
+            res.status(200).send({ message: "process finished" });
         }
         else {
             // create json
             const json = await generateJSON(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
-
-            // delete 
-            await deleteData(fileName);
 
             // return json
             res.status(200).json({ success: true, data: json });
@@ -98,6 +95,11 @@ app.get('/api/process', async (req, res) => {
     } catch (error) {
         // Log the error for debugging purposes
         console.error("Error during prediction:", error);
+        console.error("scenario: ", scenario);
+        console.error("camera: ", camera);
+        console.error("lens: ", lens || "-");
+
+        await saveData(scenario, camera, lens, mail);
 
         // Send back an error response
         res.status(500).json({ success: false, message: "Internal server error." });
@@ -105,7 +107,12 @@ app.get('/api/process', async (req, res) => {
 });
 
 function extractTextFromResponse(response) {
-    return response.candidates?.[0]?.content?.parts?.[0]?.text ?? "-";
+    const result = response.candidates?.[0]?.content?.parts?.[0]?.text ?? "-";
+
+    if(result == "-")
+        throw new Error("invalid response: " + response);
+
+    return result;
 }
 
 // Start the server
