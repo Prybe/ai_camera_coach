@@ -77,7 +77,7 @@ async function accessAllowed() {
         if (error.code === 404) {
             const today = new Date().toISOString().split('T')[0];
             const newData = {[today]: 1};
-            await file.save(JSON.stringify(newData), {resumable: false});
+            await file_Gatekeeper.save(JSON.stringify(newData), {resumable: false});
             return true;
         } else {
             // Log any other error
