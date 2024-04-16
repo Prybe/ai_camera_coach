@@ -118,7 +118,7 @@ function parseAndStyleHtml2(markdownText) {
         const listItemTexts = [];
 
         // Use matchAll to find all matches and iterate with a for...of loop
-        const matches = html.matchAll(regex);
+        const matches = parsedHtml.matchAll(regex);
 
         let index = 0;
         for (const match of matches) {
