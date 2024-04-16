@@ -122,7 +122,6 @@ function parseAndStyleHtml2(markdownText) {
 
         let index = 0;
         for (const match of matches) {
-            console.log(`Match found: ${match[0]}`);
             // Extract the text content within <li></li>
             listItemTexts.push({
                 id: index,
