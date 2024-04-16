@@ -5,7 +5,7 @@ const app = express();
 const { generatePDF, generateHTML, generateJSON } = require('./pdf');
 const sendMail = require('./mail');
 const { generateImage } = require('./openai');
-const { getData, saveData } = require('./gatekeeper');
+const { getData, saveData, deleteData } = require('./gatekeeper');
 const { callVertexAIService } = require('./vertex');
 
 // Middleware to parse JSON bodies
@@ -81,7 +81,7 @@ app.get('/api/process', async (req, res) => {
             // send mail
             await sendMail(mail, pdfBase64);
 
-            await deleteFile(fileName);
+            await deleteData(fileName);
 
             res.status(200).json({ success: true });
         }
@@ -90,7 +90,7 @@ app.get('/api/process', async (req, res) => {
             const json = await generateJSON(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
 
             // delete 
-            await deleteFile(fileName);
+            await deleteData(fileName);
 
             // return json
             res.status(200).json({ success: true, data: json });
