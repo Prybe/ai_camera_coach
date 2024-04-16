@@ -52,9 +52,8 @@ async function generateHTML(scenario, cameraSettingComposition, creativeSettings
     try {
         // Step 1: Read the HTML template
         const templateHtml = await fs.readFile('template.html', 'utf8');
-        console.log(cameraSettingComposition);
+     
         const result = parseAndStyleHtml2(cameraSettingComposition);
-        console.log(result[0].text);
         const resultCreative = parseAndStyleHtml2(creativeSettingsComposition);
         const finalAvoid = parseAndStyleHtml(avoid);
 
