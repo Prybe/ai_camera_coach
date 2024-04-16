@@ -108,9 +108,13 @@ app.get('/api/process', async (req, res) => {
 
 function extractTextFromResponse(response) {
     const result = response.candidates?.[0]?.content?.parts?.[0]?.text ?? "-";
+    const finishReason = response.candidates?.[0]?.finish_reason ?? "-";
 
     if(result == "-")
         throw new Error("invalid response: " + response);
+
+    if(finishReason != "STOP")
+        throw new Error("invalid finish reason: " + finishReason);
 
     return result;
 }
