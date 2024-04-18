@@ -114,7 +114,7 @@ function extractTextFromResponse(response) {
         throw new Error("invalid response: " + response);
 
     if(finishReason != "STOP")
-        throw new Error("invalid finish reason: " + finishReason);
+        throw new Error("invalid finish reason: " + response);
 
     return result;
 }
