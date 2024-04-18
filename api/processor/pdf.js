@@ -118,7 +118,8 @@ function parseAndStyleHtml(markdownText) {
 }
 
 function setStyle(text) {
-    return text.replace(/<li/g, "<li style=\"margin-bottom: 8px; letter-spacing: 0.1px;\"");
+    let result = text.replace(/<li/g, "<li style=\"margin-bottom: 8px; letter-spacing: 0.1px;\"");
+    return result.replace(/<\/li>/g, "</li><br>");
 }
 
 function parseAndStyleHtml2(markdownText) {

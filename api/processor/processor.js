@@ -85,31 +85,31 @@ async function processData(camera, scenario, lens, mail, res) {
     //const outputFormatPrompt = "The output format should be a point bullet point list in html."
     const outputFormatPrompt = "Add a divider for between both lists.";
 
-    //Better results with 5 separate vertex ai calls
-    //combine settings and compositions prompt resiults in a shorter output
+    //Better results with 5 separate vertex ai calls relatex to token limits.
+    //combine settings and compositions prompt results in a shorter output with less details.
 
     // 1) ask for camera settings as bullet point list 
-    cameraPrompt1 = "Create a list with 7 camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : + ".");
+    cameraPrompt1 = "Create a list with 5 camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : + ".");
 
     // // 2) ask for composition tips as bullet point list 
-    cameraPrompt2 = "Create a list with 7 compositions with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
+    cameraPrompt2 = "Create a list with 5 compositions with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
     const returned1 = await callVertexAIService(cameraPrompt1);
     const returned2 = await callVertexAIService(cameraPrompt2);
     const resultSettings = extractTextFromResponse(returned1);
     const resultComposition = extractTextFromResponse(returned2);
 
     // // 3) ask for more creative settings as bullet point list 
-    cameraPrompt1 = "Create a list with 7 unusual camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ". It can be creative and use of extra equipment.");
+    cameraPrompt1 = "Create a list with 5 unusual camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ". It can be creative and use of extra equipment.");
 
     // // 4) ask for more creative composition tips with equipment as bullet point list 
-    cameraPrompt2 = "Create a list with 7 unusual compositions with extra equipment with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
+    cameraPrompt2 = "Create a list with 5 unusual compositions with extra equipment with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
     const returnedCreative1 = await callVertexAIService(cameraPrompt1);
     const returnedCreative2 = await callVertexAIService(cameraPrompt2);
     const resultCreativeSettings = extractTextFromResponse(returnedCreative1);
     const resultCreativeComposition = extractTextFromResponse(returnedCreative2);
 
     // // 5) ask for things to avoid
-    cameraPrompt1 = "Create a list with 7 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to photograph the scenario " + scenario);
+    cameraPrompt1 = "Create a list with 5 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to photograph the scenario " + scenario);
     const returnedAvoid = await callVertexAIService(cameraPrompt1);
     const resultAvoid = extractTextFromResponse(returnedAvoid);
 
