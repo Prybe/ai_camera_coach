@@ -65,6 +65,9 @@ async function generateHTML(scenario, cameraSettingComposition, creativeSettings
         const resultCreative = parseAndStyleHtml2(creativeSettingsComposition);
         const finalAvoid = parseAndStyleHtml(avoid);
 
+        //TODO: What happens when parsing goes wrong. vertex output are not markdown two lists
+        //for now - Error
+        
         if (result.length != 2) {
             throw new Error("invalid parsing vertex ai response. " + cameraSettingComposition);
         }
@@ -90,10 +93,15 @@ async function generateHTML(scenario, cameraSettingComposition, creativeSettings
 async function generateJSON(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
     try {
         // Construct the JSON object from the provided parameters
+        const cameraSettingAndCompositionHTML = await parseAndStyleHtml2(cameraSettingComposition);
+        const creativeSettingsCompositionHTML = await parseAndStyleHtml2(creativeSettingsComposition);
+
         const json = {
             scenario: scenario,
             cameraSettingAndComposition: cameraSettingComposition,
             creativeCameraSettingAndComposition: creativeSettingsComposition,
+            cameraSettingAndCompositionHTML: cameraSettingAndCompositionHTML,
+            creativeSettingsCompositionHTML: creativeSettingsCompositionHTML,
             avoid: avoid
         };
 
