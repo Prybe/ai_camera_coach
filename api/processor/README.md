@@ -12,7 +12,6 @@ d) Setup a .env file that contains 12 variables. see .sample_env_file
 - PROJECT_ID=<your google project id>
 - LOCATION=<model location like europe-west3>
 - MODEL_ID=<modelId like gemini-1.0-pro-vision-001>
-- MODEL_ID_VISION=<checked but not used - modelId like gemini-1.0-pro-vision-001>
 - GOOGLE_APPLICATION_CREDENTIALS=<name of your service account file for local development>
 - BREVO_MAIL=<brevo user login>
 - BREVO_API_KEY=<brevo api key>
@@ -22,7 +21,7 @@ d) Setup a .env file that contains 12 variables. see .sample_env_file
 - GOOGLE_BUCKET_GATEKEEPER_FILENAME=<name of your gatekeeper json file for storing credits>
 
 A google service account json file must be created in the google developer console with permission role of "vertex ai service".
-This file is placed like .env in the root folder and copied in docker build process to your image.
+This file is placed in the root folder for each api next to the dockerfile and copied in docker build process to your image.
 Authentication process happens during startup.
 
 ## Step 2:

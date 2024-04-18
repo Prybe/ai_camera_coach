@@ -2,7 +2,7 @@
 
 const express = require('express');
 const app = express();
-const { generatePDF, generateHTML, generateJSON } = require('./pdf');
+const { generatePDF, generateJSON } = require('./pdf');
 const sendMail = require('./mail');
 const { getData, saveData, deleteData } = require('./gatekeeper');
 const { callVertexAIService } = require('./vertex');
@@ -85,21 +85,28 @@ async function processData(camera, scenario, lens, mail, res) {
     //const outputFormatPrompt = "The output format should be a point bullet point list in html."
     const outputFormatPrompt = "Add a divider for between both lists.";
 
+    //Better results with 5 separate vertex ai calls
+    //combine settings and compositions prompt resiults in a shorter output
+
     // 1) ask for camera settings as bullet point list 
     cameraPrompt1 = "Create a list with 7 camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : + ".");
 
     // // 2) ask for composition tips as bullet point list 
     cameraPrompt2 = "Create a list with 7 compositions with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
-    const returned = await callVertexAIService(cameraPrompt1 + cameraPrompt2 + outputFormatPrompt);
-    const resultSettingsAndComposition = extractTextFromResponse(returned);
+    const returned1 = await callVertexAIService(cameraPrompt1);
+    const returned2 = await callVertexAIService(cameraPrompt2);
+    const resultSettings = extractTextFromResponse(returned1);
+    const resultComposition = extractTextFromResponse(returned2);
 
     // // 3) ask for more creative settings as bullet point list 
     cameraPrompt1 = "Create a list with 7 unusual camera settings with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ". It can be creative and use of extra equipment.");
 
     // // 4) ask for more creative composition tips with equipment as bullet point list 
     cameraPrompt2 = "Create a list with 7 unusual compositions with extra equipment with detailed explanation when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
-    const returnedCreative = await callVertexAIService(cameraPrompt1 + cameraPrompt2 + outputFormatPrompt);
-    const resultCreativeSettingsAndComposition = extractTextFromResponse(returnedCreative);
+    const returnedCreative1 = await callVertexAIService(cameraPrompt1);
+    const returnedCreative2 = await callVertexAIService(cameraPrompt2);
+    const resultCreativeSettings = extractTextFromResponse(returnedCreative1);
+    const resultCreativeComposition = extractTextFromResponse(returnedCreative2);
 
     // // 5) ask for things to avoid
     cameraPrompt1 = "Create a list with 7 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to photograph the scenario " + scenario);
@@ -115,7 +122,7 @@ async function processData(camera, scenario, lens, mail, res) {
     if (mail) {
 
         // 8) create pdf
-        const pdfBase64 = await generatePDF(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
+        const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
 
         //DEBUG 
         //const content = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
@@ -127,7 +134,7 @@ async function processData(camera, scenario, lens, mail, res) {
     }
     else {
         // create json
-        const json = await generateJSON(scenario, resultSettingsAndComposition, resultCreativeSettingsAndComposition, resultAvoid);
+        const json = await generateJSON(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
 
         // return json
         res.status(200).json({ success: true, data: json });

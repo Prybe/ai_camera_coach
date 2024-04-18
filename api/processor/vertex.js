@@ -7,10 +7,9 @@ const { VertexAI } = require('@google-cloud/vertexai');
 const projectId = process.env.PROJECT_ID;
 const location = process.env.LOCATION;
 const modelId = process.env.MODEL_ID;
-const modelIdVision = process.env.MODEL_ID_VISION;
 
-if (!projectId || !location || !modelId || !modelIdVision) {
-    console.error('Error: The environment variables PROJECT_ID, MODEL_ID, MODEL_ID_VISION and LOCATION must be set.');
+if (!projectId || !location || !modelId) {
+    console.error('Error: The environment variables PROJECT_ID, MODEL_ID and LOCATION must be set.');
     process.exit(1); // Exit the application if variables are not set
 }
 

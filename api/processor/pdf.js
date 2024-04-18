@@ -3,12 +3,12 @@ const marked = require('marked');
 var puppeteer = require("puppeteer");
 
 // Function to convert HTML to PDF Buffer using WeasyPrint
-async function generatePDF(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
+async function generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultComposition, avoid) {
 
     let browser = null;
 
     try {
-        const updatedHtml = await generateHTML(scenario, cameraSettingComposition, creativeSettingsComposition, avoid);
+        const updatedHtml = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultComposition, avoid);
 
         // Launch a headless browser
         browser = await puppeteer.launch({
@@ -49,39 +49,24 @@ async function generatePDF(scenario, cameraSettingComposition, creativeSettingsC
     }
 }
 
-async function generateHTML(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
+async function generateHTML(scenario, settings, composition, creativeSettings, creativeComposition, avoid) {
     try {
         // Step 1: Read the HTML template
         const templateHtml = await fs.readFile('template.html', 'utf8');
 
-        if (!cameraSettingComposition) {
-            throw new Error("invalid vertex ai response. " + cameraSettingComposition);
-        }
-        if (!creativeSettingsComposition) {
-            throw new Error("invalid vertex ai response. " + creativeSettingsComposition);
-        }
-
-        const result = parseAndStyleHtml2(cameraSettingComposition);
-        const resultCreative = parseAndStyleHtml2(creativeSettingsComposition);
+        const resultSetting = parseAndStyleHtml(settings);
+        const resultComposition = parseAndStyleHtml(composition);
+        const resultSettingCreative = parseAndStyleHtml(creativeSettings);
+        const resultCompositionCreative = parseAndStyleHtml(creativeComposition);
         const finalAvoid = parseAndStyleHtml(avoid);
 
-        //TODO: What happens when parsing goes wrong. vertex output are not markdown two lists
-        //for now - Error
-        
-        if (result.length != 2) {
-            throw new Error("invalid parsing vertex ai response. " + cameraSettingComposition);
-        }
-        if (resultCreative.length != 2) {
-            throw new Error("invalid parsing vertex ai response. " + creativeSettingsComposition);
-        }
-
         // Step 2: Replace placeholder text with actual content
-        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', setStyle(result[0].text));
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', setStyle(result[1].text));
+        let updatedHtml = templateHtml.replace('PLACEHOLDER_CAMERA_SETTINGS', resultSetting);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_COMPOSITION_TIPS', resultComposition);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_SCENARIO', scenario);
         updatedHtml = updatedHtml.replace('PLACEHOLDER_AVOID', finalAvoid);
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', setStyle(resultCreative[0].text));
-        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', setStyle(resultCreative[1].text));
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_CAMERA_SETTINGS', resultSettingCreative);
+        updatedHtml = updatedHtml.replace('PLACEHOLDER_CREATIVE_COMPOSITION_TIPS', resultCompositionCreative);
 
         return updatedHtml;
     } catch (error) {
@@ -90,19 +75,27 @@ async function generateHTML(scenario, cameraSettingComposition, creativeSettings
     }
 }
 
-async function generateJSON(scenario, cameraSettingComposition, creativeSettingsComposition, avoid) {
+async function generateJSON(scenario, settings, composition, creativeSettings, creativeComposition, avoid) {
     try {
         // Construct the JSON object from the provided parameters
-        const cameraSettingAndCompositionHTML = await parseAndStyleHtml2(cameraSettingComposition);
-        const creativeSettingsCompositionHTML = await parseAndStyleHtml2(creativeSettingsComposition);
+        const cameraSettingHTML = await parseAndStyleHtml(settings);
+        const cameraCompositionHTML = await parseAndStyleHtml(composition);
+        const creativeCameraSettingHTML = await parseAndStyleHtml(creativeSettings);
+        const creativeCameraCompositionHTML = await parseAndStyleHtml(creativeComposition);
+        const avoidHTML = await parseAndStyleHtml(avoid);
 
         const json = {
             scenario: scenario,
-            cameraSettingAndComposition: cameraSettingComposition,
-            creativeCameraSettingAndComposition: creativeSettingsComposition,
-            cameraSettingAndCompositionHTML: cameraSettingAndCompositionHTML,
-            creativeSettingsCompositionHTML: creativeSettingsCompositionHTML,
-            avoid: avoid
+            cameraSetting: settings,
+            cameraComposition: composition,
+            creativeCameraSetting: creativeSettings,
+            creativeCameraComposition: creativeComposition,
+            avoid: avoid,
+            cameraSettingHTML: cameraSettingHTML,
+            cameraCompositionHTML: cameraCompositionHTML,
+            creativeCameraSettingHTML: creativeCameraSettingHTML,
+            creativeCameraCompositionHTML: creativeCameraCompositionHTML,
+            avoidHTML: avoidHTML
         };
 
         // Return the constructed JSON object
@@ -181,6 +174,5 @@ function parseAndStyleImage(imageUrl) {
 
 module.exports = {
     generatePDF,
-    generateHTML,
     generateJSON
 };
