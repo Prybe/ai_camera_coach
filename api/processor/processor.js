@@ -140,10 +140,10 @@ function extractTextFromResponse(response) {
     const finishReason = response.candidates?.[0]?.finish_reason ?? "-";
 
     if(result == "-")
-        throw new Error("invalid response: " + response);
+        throw new Error("invalid response: " + JSON.stringify(response));
 
     if(finishReason != "STOP")
-        throw new Error("invalid finish reason: " + response);
+        throw new Error("invalid finish reason: " + JSON.stringify(response));
 
     return result;
 }
