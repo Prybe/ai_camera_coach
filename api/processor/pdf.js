@@ -3,12 +3,12 @@ const marked = require('marked');
 var puppeteer = require("puppeteer");
 
 // Function to convert HTML to PDF Buffer using WeasyPrint
-async function generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultComposition, avoid) {
+async function generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, avoid) {
 
     let browser = null;
 
     try {
-        const updatedHtml = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultComposition, avoid);
+        const updatedHtml = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, avoid);
 
         // Launch a headless browser
         browser = await puppeteer.launch({
