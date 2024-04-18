@@ -137,7 +137,7 @@ async function processData(camera, scenario, lens, mail, res) {
 
 function extractTextFromResponse(response) {
     const result = response.candidates?.[0]?.content?.parts?.[0]?.text ?? "-";
-    const finishReason = response.candidates?.[0]?.finish_reason ?? "-";
+    const finishReason = response.candidates?.[0]?.finishReason ?? "-";
 
     if(result == "-")
         throw new Error("invalid response: " + JSON.stringify(response));
