@@ -1,3 +1,7 @@
 node_modules/
 .env
 service-account.json
+api/.DS_Store
+api/processor/.DS_Store
+.DS_Store
+data/output.html

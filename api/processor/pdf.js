@@ -118,7 +118,7 @@ function parseAndStyleHtml(markdownText) {
 }
 
 function setStyle(text) {
-    let result = text.replace(/<li/g, "<li style=\"margin-bottom: 8px; letter-spacing: 0.1px;\"");
+    let result = text.replace(/<ul>/g, "<ul style=\"margin-bottom: 4px;>\"");
     return result.replace(/<\/li>/g, "</li><br>");
 }
 
@@ -175,5 +175,6 @@ function parseAndStyleImage(imageUrl) {
 
 module.exports = {
     generatePDF,
-    generateJSON
+    generateJSON,
+    generateHTML
 };

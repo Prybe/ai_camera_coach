@@ -2,10 +2,12 @@
 
 const express = require('express');
 const app = express();
-const { generatePDF, generateJSON } = require('./pdf');
+const { generatePDF, generateJSON, generateHTML } = require('./pdf');
 const sendMail = require('./mail');
 const { getData, saveData, deleteData } = require('./gatekeeper');
 const { callVertexAIService } = require('./vertex');
+const path = require('path');
+const fs = require('fs');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -135,6 +137,18 @@ async function processData(camera, scenario, lens, mail, res) {
     else {
         // create json
         const json = await generateJSON(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+
+        //const pdfBase64 = await generatePDF(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+        const updatedHtml = await generateHTML(scenario, resultSettings, resultComposition, resultCreativeSettings, resultCreativeComposition, resultAvoid);
+
+        const filePath = path.join(__dirname, 'data', 'output.html');
+        fs.writeFile(filePath, updatedHtml, (err) => {
+            if (err) {
+              console.error('Error writing file:', err);
+            } else {
+              console.log('File has been written successfully');
+            }
+          });
 
         // return json
         res.status(200).json({ success: true, data: json });

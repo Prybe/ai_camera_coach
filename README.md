@@ -48,3 +48,4 @@ Create a json body f.e.
 }
 
 The content will be returned as json.
+The html text will also be saved in a mounted folder.
