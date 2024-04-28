@@ -84,8 +84,8 @@ async function processData(camera, scenario, lens, mail, res) {
     let cameraPrompt2 = ""
 
     //TODO: Currently ignored by the vertex ai api
-    //const outputFormatPrompt = "The output format should be a point bullet point list in html."
-    const outputFormatPrompt = "";
+    const outputFormatPrompt = "The output format should be a point bullet point list."
+    //const outputFormatPrompt = "";
 
     //Better results with 5 separate vertex ai calls relatex to token limits.
     //combine settings and compositions prompt results in a shorter output with less details.
@@ -95,8 +95,8 @@ async function processData(camera, scenario, lens, mail, res) {
 
     // // 2) ask for composition tips as bullet point list 
     cameraPrompt2 = "Explain 5 compositions with details when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
-    const returned1 = await callVertexAIService(cameraPrompt1);
-    const returned2 = await callVertexAIService(cameraPrompt2);
+    const returned1 = await callVertexAIService(cameraPrompt1 + outputFormatPrompt);
+    const returned2 = await callVertexAIService(cameraPrompt2 + outputFormatPrompt);
     const resultSettings = extractTextFromResponse(returned1);
     const resultComposition = extractTextFromResponse(returned2);
 
@@ -105,14 +105,14 @@ async function processData(camera, scenario, lens, mail, res) {
 
     // // 4) ask for more creative composition tips with equipment as bullet point list 
     cameraPrompt2 = "Explain 5 unusual compositions with extra equipment with details when i want to photograph " + scenario + " using a " + camera + (lens ? " and lens " + lens : ".");
-    const returnedCreative1 = await callVertexAIService(cameraPrompt1);
-    const returnedCreative2 = await callVertexAIService(cameraPrompt2);
+    const returnedCreative1 = await callVertexAIService(cameraPrompt1 + outputFormatPrompt);
+    const returnedCreative2 = await callVertexAIService(cameraPrompt2 + outputFormatPrompt);
     const resultCreativeSettings = extractTextFromResponse(returnedCreative1);
     const resultCreativeComposition = extractTextFromResponse(returnedCreative2);
 
     // // 5) ask for things to avoid
     cameraPrompt1 = "Create a list with 5 things to avoid and common mistakes with camera " + camera + (lens ? " and lens " + lens : ". I want to photograph the scenario " + scenario);
-    const returnedAvoid = await callVertexAIService(cameraPrompt1);
+    const returnedAvoid = await callVertexAIService(cameraPrompt1 + outputFormatPrompt);
     const resultAvoid = extractTextFromResponse(returnedAvoid);
 
     // // 6) create an image with 1) and 2)

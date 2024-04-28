@@ -125,18 +125,16 @@ function parseAndStyleHtml(markdownText) {
  */
  function replaceTag(text) {
     // Use regex to find all <li> tags
-    const regex = /<li>/g;
+    const regex = /<\/ul>/g;
     let match;
 
     // Loop through all matches
     while ((match = regex.exec(text)) !== null) {
 
-        console.log(match.index)
-
-        // Check if the index of the match is over 1500
-        if (match.index > 1500) {
-        // Replace the match with <li className='..'>
-            text = text.replace(match[0], '<li class="new-page-before">');
+        // Check if the index of the match is over X
+        if (match.index > 2100) {
+            // Replace the match with <li className='..'>
+            text = text.substring(0, match.index) + '</ul><p class="new-page-after">' + text.substring(match.index + 5);
             break;
         }
     }
@@ -146,8 +144,6 @@ function parseAndStyleHtml(markdownText) {
 
 function setStyle(text) {
     let result = replaceTag(text);
-    result = result.replace(/<ul>/g, "<ul style=\"margin-bottom: 6px;\">");
-    result = result.replace(/<h2>/g, "<h2 style=\"margin-bottom: 4px;\">");
     return result.replace(/<\/li>/g, "</li><br>");
 }
 
