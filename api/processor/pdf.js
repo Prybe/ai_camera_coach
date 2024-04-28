@@ -132,7 +132,7 @@ function parseAndStyleHtml(markdownText) {
     while ((match = regex.exec(text)) !== null) {
 
         // Check if the index of the match is over X
-        if (match.index > 2100) {
+        if (match.index > 1900) {
             // Replace the match with <li className='..'>
             text = text.substring(0, match.index) + '</ul><p class="new-page-after">' + text.substring(match.index + 5);
             break;
