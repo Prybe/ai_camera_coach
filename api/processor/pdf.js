@@ -117,42 +117,39 @@ function parseAndStyleHtml(markdownText) {
     return setStyle(parsedText);
 }
 
+/**
+ * HTTP function that replaces the first <li> tag with <li2>
+ *
+ * @param {Object} req Cloud Function request context.
+ * @param {Object} res Cloud Function response context.
+ */
+ function replaceTag(text) {
+    // Use regex to find all <li> tags
+    const regex = /<li>/g;
+    let match;
+
+    // Loop through all matches
+    while ((match = regex.exec(text)) !== null) {
+
+        console.log(match.index)
+
+        // Check if the index of the match is over 1500
+        if (match.index > 1500) {
+        // Replace the match with <li className='..'>
+            text = text.replace(match[0], '<li class="new-page-before">');
+            break;
+        }
+    }
+
+    return text;
+}
+
 function setStyle(text) {
-    let result = text.replace(/<ul>/g, "<ul style=\"margin-bottom: 4px;>\"");
+    let result = replaceTag(text);
+    result = result.replace(/<ul>/g, "<ul style=\"margin-bottom: 6px;\">");
+    result = result.replace(/<h2>/g, "<h2 style=\"margin-bottom: 4px;\">");
     return result.replace(/<\/li>/g, "</li><br>");
 }
-
-function parseAndStyleHtml2(markdownText) {
-    try {
-        // Parse markdown to HTML
-        const parsedHtml = marked.parse(markdownText);
-
-        // 
-        const regex = /<ol[^>]*>([\s\S]*?)<\/ol>/gi;
-
-        // Create an array to hold objects representing each <li>
-        const listItemTexts = [];
-
-        // Use matchAll to find all matches and iterate with a for...of loop
-        const matches = parsedHtml.matchAll(regex);
-
-        let index = 0;
-        for (const match of matches) {
-            // Extract the text content within <li></li>
-            listItemTexts.push({
-                id: index,
-                text: match[0].trim()
-            });
-            index++;
-        }
-        // Return the array of objects
-        return listItemTexts;
-    } catch (error) {
-        console.error("Error in parseAndStyleHtml2:", error);
-        throw error;  // Re-throw after logging or handle differently if needed
-    }
-}
-
 
 /**
  * Generates HTML code for displaying an image with specific dimensions.
